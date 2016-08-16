@@ -4,6 +4,7 @@
 
 use dom::bindings::cell::DOMRefCell;
 use dom::bindings::codegen::Bindings::HeadersBinding;
+use dom::bindings::codegen::Bindings::HeadersBinding::HeadersWrap;
 use dom::bindings::codegen::Bindings::HeadersBinding::HeadersMethods;
 use dom::bindings::codegen::UnionTypes::HeadersOrByteStringSequenceSequence;
 use dom::bindings::error::{Error, ErrorResult, Fallible};
@@ -44,7 +45,7 @@ impl Headers {
     }
 
     pub fn new(global: GlobalRef) -> Root<Headers> {
-        reflect_dom_object(box Headers::new_inherited(), global, HeadersBinding::Wrap)
+        reflect_dom_object(box Headers::new_inherited(), global, HeadersWrap)
     }
 
     // https://fetch.spec.whatwg.org/#dom-headers
@@ -224,20 +225,31 @@ impl Headers {
 impl Iterable for Headers {
     type Key = ByteString;
     type Value = ByteString;
-    
+
     fn get_iterable_length(&self) -> u32 {
-        unimplemented!();
+        self.header_list.borrow().iter().count() as u32
     }
 
     fn get_value_at_index(&self, n: u32) -> ByteString {
-        unimplemented!();
+        let borrowed_header_list = self.header_list.borrow();
+        let headers_item = borrowed_header_list.iter().nth(n as usize);
+        if let Some(header_view) = headers_item {
+            ByteString::new(header_view.value_string().into_bytes())
+        } else {
+            ByteString::new(b"none".to_vec())
+        }
     }
 
     fn get_key_at_index(&self, n: u32) -> ByteString {
-        unimplemented!();
+        let borrowed_header_list = self.header_list.borrow();
+        let headers_item = borrowed_header_list.iter().nth(n as usize);
+        if let Some(header_view) = headers_item {
+            ByteString::new(header_view.name().to_string().into_bytes())
+        } else {
+            ByteString::new(b"none".to_vec())
+        }
     }
 }
-
 
 // TODO
 // "Content-Type" once parsed, the value should be
