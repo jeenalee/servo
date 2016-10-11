@@ -12,6 +12,7 @@ test_interfaces([
   "CloseEvent",
   "CSS",
   "CSSStyleDeclaration",
+  "Doge",
   "DOMPoint",
   "DOMPointReadOnly",
   "DOMQuad",
