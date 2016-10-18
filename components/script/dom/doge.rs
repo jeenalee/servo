@@ -5,7 +5,7 @@
 use dom::bindings::cell::DOMRefCell;
 use dom::bindings::codegen::Bindings::DogeBinding::{DogeMethods, DogeInit, Wrap as DogeWrap};
 use dom::bindings::error::{Error, Fallible};
-use dom::bindings::global::GlobalRef;
+use dom::globalscope::GlobalScope;
 use dom::bindings::js::Root;
 use dom::bindings::reflector::{Reflector, reflect_dom_object};
 use dom::bindings::str::ByteString;
@@ -26,12 +26,12 @@ impl Doge {
         }
     }
 
-    pub fn new(global: GlobalRef) -> Root<Doge> {
+    pub fn new(global: &GlobalScope) -> Root<Doge> {
         reflect_dom_object(box Doge::new_inherited(), global, DogeWrap)
     }
 
     // https://jeenalee.github.io/doge-standard/#dom-doge
-    pub fn Constructor(global: GlobalRef, init: Option<DogeInit>) -> Fallible<Root<Doge>> {
+    pub fn Constructor(global: &GlobalScope, init: Option<DogeInit>) -> Fallible<Root<Doge>> {
         // Step 1
         let doge = Doge::new(global);
         // Step 2
